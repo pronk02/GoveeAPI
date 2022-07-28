@@ -10,6 +10,8 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.27.2",
     "node-govee-led": "^1.5.1"
   },
   "devDependencies": {

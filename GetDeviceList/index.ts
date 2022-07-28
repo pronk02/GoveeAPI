@@ -1,5 +1,5 @@
 import {AzureFunction, Context, HttpRequest} from "@azure/functions";
-import Govee from "node-govee-led"
+import axios, {AxiosRequestConfig, AxiosRequestHeaders} from "axios"
 
 const apiKey = process.env.GOVEE_API_KEY
 const mac = process.env.TABLE_LIGHT_MAC_ADDRESS
@@ -8,6 +8,19 @@ const baseUrl = process.env.BASEURL
 
 async function lightOn() {
 
+    const headers:AxiosRequestHeaders = ({
+        "Govee-API-Key": apiKey,
+        "Content-Type": "application/json"
+    });
+
+    const path = "/devices";
+    const url = baseUrl + path
+    const config: AxiosRequestConfig = {
+        headers: headers,
+        method: "PUT",
+        url: baseUrl + path
+    }
+    return await axios(config)
 
 }
 
@@ -17,10 +30,7 @@ export const httpTrigger: AzureFunction = async (
 ): Promise<void> => {
     context.log("HTTP trigger: Turn On.");
 
-    const headers = {
-        "Govee-API-Key": apiKey,
-        "Content-Type": "application/json"
-    };
+
     //req.headers.add("Govee-API-Key", apiKey);
     /* req = {
         body: "Hello",
@@ -32,10 +42,10 @@ export const httpTrigger: AzureFunction = async (
         parseFormBody: null,
         user: null
     }; */
-    req.headers = headers
+    //req.headers = headers
 
     //const name = req.query.name || (req.body && req.body.name);
-    const responseMessage = `API Key: ${apiKey}`
+    const responseMessage = await lightOn()
     context.res = {
         body: responseMessage
     }
