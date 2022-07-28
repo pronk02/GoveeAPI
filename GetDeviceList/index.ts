@@ -1,14 +1,14 @@
 import {AzureFunction, Context, HttpRequest} from "@azure/functions";
 import Govee from "node-govee-led"
 
-function lightOn() {
+async function lightOn() {
 
     const GoveeClient = new Govee({
         apiKey: process.env.GOVEE_API_KEY,
         mac: process.env.TABLE_LIGHT_MAC_ADDRESS,
         model: process.env.TABLE_LIGHT_MODEL,
     });
-    
+
     GoveeClient.turnOn
 }
 
@@ -23,7 +23,8 @@ export const httpTrigger: AzureFunction = async (
           name +
           ". This HTTP triggered function executed successfully."
         : "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.";
-    //Test Again
+
+    await lightOn()
     context.res = {
         // status: 200, /* Defaults to 200 */
         body: responseMessage,
