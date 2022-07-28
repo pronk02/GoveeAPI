@@ -10,20 +10,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.httpTrigger = void 0;
+const axios_1 = require("axios");
 const apiKey = process.env.GOVEE_API_KEY;
 const mac = process.env.TABLE_LIGHT_MAC_ADDRESS;
 const model = process.env.TABLE_LIGHT_MODEL;
 const baseUrl = process.env.BASEURL;
 function lightOn() {
     return __awaiter(this, void 0, void 0, function* () {
+        const headers = ({
+            "Govee-API-Key": apiKey,
+            "Content-Type": "application/json"
+        });
+        const path = "/devices";
+        const url = baseUrl + path;
+        const config = {
+            headers: headers,
+            method: "PUT",
+            url: baseUrl + path
+        };
+        return yield (0, axios_1.default)(config);
     });
 }
 const httpTrigger = (context, req) => __awaiter(void 0, void 0, void 0, function* () {
     context.log("HTTP trigger: Turn On.");
-    const headers = {
-        "Govee-API-Key": apiKey,
-        "Content-Type": "application/json"
-    };
     //req.headers.add("Govee-API-Key", apiKey);
     /* req = {
         body: "Hello",
@@ -35,9 +44,9 @@ const httpTrigger = (context, req) => __awaiter(void 0, void 0, void 0, function
         parseFormBody: null,
         user: null
     }; */
-    req.headers = headers;
+    //req.headers = headers
     //const name = req.query.name || (req.body && req.body.name);
-    const responseMessage = `API Key: ${apiKey}`;
+    const responseMessage = yield lightOn();
     context.res = {
         body: responseMessage
     };
